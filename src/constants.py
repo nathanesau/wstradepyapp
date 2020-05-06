@@ -1,0 +1,1 @@
+APP_NAME = "Wealth Simple Trade Desktop (Unofficial)"
