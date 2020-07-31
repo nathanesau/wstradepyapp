@@ -15,7 +15,7 @@
             "name": "Python: Debug App",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/app.py",
+            "program": "${workspaceFolder}/app.py",
             "console": "integratedTerminal"
         }
     ]
