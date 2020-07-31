@@ -100,12 +100,10 @@ class WealthsimpleTradeAPI:
 
     # /orders
     def get_orders(self):
-        if self.access_token is None:
-            raise Exception("User has not been authenticated")
-        
         url = "{}/orders".format(self.base_url)
         headers = {'Authorization': self.access_token}
         r = requests.get(url, headers = headers)
+        code = r.status_code
 
         if code != 200: # unauthorized access
             if code == 401 or code == 403:
@@ -114,3 +112,5 @@ class WealthsimpleTradeAPI:
 
         data = r.json()
         return data
+
+    # TODO
