@@ -55,12 +55,14 @@ class MainWindow(QMainWindow):
         help_menu.addAction(self.about_action)
 
         home_button = QPushButton('Home', self)
+        positions_button = QPushButton('Positions', self)
         activity_button = QPushButton('Activity', self)
         funding_button = QPushButton('Funding', self)
         accounts_button = QPushButton('Accounts', self)
         settings_button = QPushButton('Settings', self)
 
         home_button.clicked.connect(self.on_home_button)
+        positions_button.clicked.connect(self.on_positions_button)
         activity_button.clicked.connect(self.on_activity_button)
         funding_button.clicked.connect(self.on_funding_button)
         accounts_button.clicked.connect(self.on_accounts_button)
@@ -68,6 +70,7 @@ class MainWindow(QMainWindow):
 
         left_layout = QVBoxLayout()
         left_layout.addWidget(home_button)
+        left_layout.addWidget(positions_button)
         left_layout.addWidget(activity_button)
         left_layout.addWidget(funding_button)
         left_layout.addWidget(accounts_button)
@@ -77,13 +80,15 @@ class MainWindow(QMainWindow):
 
         self.left_widget = QWidget()
         self.left_widget.setLayout(left_layout)
-        self.home_widget = HomeWidget(api)
-        self.activity_widget = ActivityWidget(api)
-        self.funding_widget = FundingWidget(api)
-        self.accounts_widget = AccountsWidget(api)
-        self.settings_widget = SettingsWidget(api)
+        self.home_widget = HomeTabWidget(api)
+        self.positions_widget = PositionsTabWidget(api)
+        self.activity_widget = ActivityTabWidget(api)
+        self.funding_widget = FundingTabWidget(api)
+        self.accounts_widget = AccountsTabWidget(api)
+        self.settings_widget = SettingsTabWidget(api)
         self.right_widget = QTabWidget()
         self.right_widget.addTab(self.home_widget, '')
+        self.right_widget.addTab(self.positions_widget, '')
         self.right_widget.addTab(self.activity_widget, '')
         self.right_widget.addTab(self.funding_widget, '')
         self.right_widget.addTab(self.accounts_widget, '')
@@ -109,6 +114,8 @@ class MainWindow(QMainWindow):
     def refresh_active_widget(self):
         if self.home_widget.active:
             self.home_widget.refresh()
+        elif self.positions_widget.active:
+            self.positions_widget.refresh()
         elif self.activity_widget.active:
             self.activity_widget.refresh()
         elif self.funding_widget.active:
@@ -137,38 +144,52 @@ class MainWindow(QMainWindow):
     def activate_home_tab(self):
         self.right_widget.setCurrentIndex(0)
         self.home_widget.active = True
+        self.positions_widget.active = False
+        self.activity_widget.active = False
+        self.funding_widget.active = False
+        self.accounts_widget.active = False
+        self.settings_widget.active = False
+
+    def activate_positions_tab(self):
+        self.right_widget.setCurrentIndex(1)
+        self.home_widget.active = False
+        self.positions_widget.active = True
         self.activity_widget.active = False
         self.funding_widget.active = False
         self.accounts_widget.active = False
         self.settings_widget.active = False
 
     def activate_activity_tab(self):
-        self.right_widget.setCurrentIndex(1)
+        self.right_widget.setCurrentIndex(2)
         self.home_widget.active = False
+        self.positions_widget.active = False
         self.activity_widget.active = True
         self.funding_widget.active = False
         self.accounts_widget.active = False
         self.settings_widget.active = False
 
     def activate_funding_tab(self):
-        self.right_widget.setCurrentIndex(2)
+        self.right_widget.setCurrentIndex(3)
         self.home_widget.active = False
+        self.positions_widget.active = False
         self.activity_widget.active = False
         self.funding_widget.active = True
         self.accounts_widget.active = False
         self.settings_widget.active = False
 
     def activate_accounts_tab(self):
-        self.right_widget.setCurrentIndex(3)
+        self.right_widget.setCurrentIndex(4)
         self.home_widget.active = False
+        self.positions_widget.active = False
         self.activity_widget.active = False
         self.funding_widget.active = False
         self.accounts_widget.active = True
         self.settings_widget.active = False
 
     def activate_settings_tab(self):
-        self.right_widget.setCurrentIndex(4)
+        self.right_widget.setCurrentIndex(5)
         self.home_widget.active = False
+        self.positions_widget.active = False
         self.activity_widget.active = False
         self.funding_widget.active = False
         self.accounts_widget.active = False
@@ -176,6 +197,10 @@ class MainWindow(QMainWindow):
 
     def on_home_button(self):
         self.activate_home_tab()
+        self.refresh_active_widget()
+
+    def on_positions_button(self):
+        self.activate_positions_tab()
         self.refresh_active_widget()
         
     def on_activity_button(self):
@@ -197,14 +222,11 @@ class MainWindow(QMainWindow):
 class AccountWidget(QWidget):
     def __init__(self, account_id, account: Account, parent=None):
         super().__init__(parent)
-        self.account_id_label = QLabel()
         self.created_label =  QLabel()
         self.balance_label = QLabel()
         self.deposits_label = QLabel()
         self.type_label = QLabel()
 
-        if account_id:
-            self.account_id_label.setText("Account {}".format(account_id))
         if account.created_at:
             self.created_label.setText(str(account.created_at))
         if account.current_balance:
@@ -273,7 +295,75 @@ class AccountListWidget(QWidget):
 
         self.repaint()
 
-class HomeWidget(QWidget):
+class PositionsWidget(QWidget):
+    def __init__(self, position_id, position: Position, parent=None):
+        super().__init__(parent)
+        self.label1 = QLabel()
+        self.label2 = QLabel()
+        self.label3 = QLabel()
+
+        self.label1.setText("Text 1")
+        self.label2.setText("Text 2")
+        self.label3.setText("Text 3")
+
+        self.group_box_layout = QGridLayout()
+        self.group_box_layout.addWidget(QLabel("Label1: "), 1, 1)
+        self.group_box_layout.addWidget(self.label1, 1, 2)
+        self.group_box_layout.addWidget(QLabel("Label2: "), 2, 1)
+        self.group_box_layout.addWidget(self.label2, 2, 2)
+        self.group_box_layout.addWidget(QLabel("Label3: "), 3, 1)
+        self.group_box_layout.addWidget(self.label3, 3, 2)
+
+        self.group_box = QGroupBox()
+        self.group_box.setTitle("Position{}".format(position_id))
+        self.group_box.setLayout(self.group_box_layout)
+
+        self.main_layout = QVBoxLayout()
+        self.main_layout.addWidget(self.group_box)
+        self.setLayout(self.main_layout)
+
+# groupbox containing positions widgets
+class PositionsListWidget(QWidget):
+    def __init__(self, api, parent=None):
+        super().__init__(parent)
+
+        # references to backend
+        self.api = api
+
+        # refreshed in "refresh"
+        # widgets get added to groupbox layout
+        self.widgets = []
+        
+        self.group_box_layout = QVBoxLayout()
+        self.group_box = QGroupBox()
+        self.group_box.setTitle("Positions")
+        self.group_box.setLayout(self.group_box_layout)
+
+        self.main_layout = QVBoxLayout()
+        self.main_layout.addWidget(self.group_box)
+        self.setLayout(self.main_layout)
+
+    def refresh(self):
+        clearLayout(self.group_box_layout)
+        
+        positions = self.api.get_positions()
+        positions_list = get_positions_list(positions)
+
+        if positions_list: # create positions widget
+            self.widgets = []
+            for i in range(len(positions_list)):
+                positions = positions_list[i]
+                self.widgets.append(PositionsWidget(i+1, positions))
+        else: # create no positions available label
+            self.widgets = [QLabel("No positions available")]
+
+        # add positions widgets to groupbox layout
+        for widget in self.widgets:
+            self.group_box_layout.addWidget(widget)
+
+        self.repaint()
+
+class HomeTabWidget(QWidget):
     def get_login_label_text(self):
         if self.api.is_authenticated():
             return "Logged in as: {}.".format(self.api.get_login_name())
@@ -320,7 +410,54 @@ class HomeWidget(QWidget):
 
         self.repaint()
 
-class ActivityWidget(QWidget):
+class PositionsTabWidget(QWidget):
+    def get_login_label_text(self):
+        if self.api.is_authenticated():
+            return "Logged in as: {}".format(self.api.get_login_name())
+        elif self.api.has_access_token():
+            return "Access token has expired. Please login again."
+        else:
+            return "User has not logged in"
+
+    def __init__(self, api, parent=None):
+        super().__init__(parent)
+        self.active = False
+
+        # references to backend
+        self.api = api
+        
+        self.info_label = QLabel()
+        self.info_label.setText("Positions")
+        self.info_label.setStyleSheet("font-size: 12pt; font-weight: bold")
+
+        self.refresh_button = QPushButton("Refresh")
+        self.refresh_button.clicked.connect(self.refresh)
+        self.title_layout = QHBoxLayout()
+        self.title_layout.addWidget(self.info_label)
+        self.title_layout.addStretch(1)
+        self.title_layout.addWidget(self.refresh_button)
+
+        self.login_label = QLabel()
+        self.balances_label = QLabel()
+        self.positions_list_widget = PositionsListWidget(self.api)
+        self.refresh()
+
+        self.main_layout = QVBoxLayout()
+        self.main_layout.addLayout(self.title_layout)
+        self.main_layout.addWidget(self.login_label)
+        self.main_layout.addWidget(self.positions_list_widget)
+        self.main_layout.addStretch(5)
+
+        self.setLayout(self.main_layout)
+
+    def refresh(self):
+        # rebuild positions list widget
+        self.positions_list_widget.refresh()
+        self.login_label.setText(self.get_login_label_text())
+
+        self.repaint()
+
+class ActivityTabWidget(QWidget):
     def get_login_label_text(self):
         if self.api.is_authenticated():
             return "Logged in as: {}.".format(self.api.get_login_name())
@@ -363,7 +500,7 @@ class ActivityWidget(QWidget):
         self.login_label.setText(self.get_login_label_text())
         self.repaint()
 
-class FundingWidget(QWidget):
+class FundingTabWidget(QWidget):
     def get_login_label_text(self):
         if self.api.is_authenticated():
             return "Logged in as: {}.".format(self.api.get_login_name())
@@ -405,7 +542,7 @@ class FundingWidget(QWidget):
         # TODO: refresh other labels here
         self.login_label.setText(self.get_login_label_text())
 
-class AccountsWidget(QWidget):
+class AccountsTabWidget(QWidget):
     def get_login_label_text(self):
         if self.api.is_authenticated():
             return "Logged in as: {}.".format(self.api.get_login_name())
@@ -447,7 +584,7 @@ class AccountsWidget(QWidget):
         # TODO: refresh other labels here
         self.login_label.setText(self.get_login_label_text())
 
-class SettingsWidget(QWidget):
+class SettingsTabWidget(QWidget):
     def get_login_label_text(self):
         if self.api.is_authenticated():
             return "Logged in as: {}.".format(self.api.get_login_name())

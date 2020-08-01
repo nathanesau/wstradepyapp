@@ -90,27 +90,40 @@ class WealthsimpleTradeAPI:
         r = requests.get(url, headers = headers)
         code = r.status_code
 
-        if code != 200: # unauthorized access
-            if code == 401 or code == 403:
+        if code != 200:
+            if code == 401 or code == 403: # unauthorized access
                 self.authenticated = False
             return ""
 
         data = r.json()
         return data.get("results")
 
-    # /orders
+    # /orders -> return json if successful else ""
     def get_orders(self):
         url = "{}/orders".format(self.base_url)
         headers = {'Authorization': self.access_token}
         r = requests.get(url, headers = headers)
         code = r.status_code
 
-        if code != 200: # unauthorized access
-            if code == 401 or code == 403:
+        if code != 200:
+            if code == 401 or code == 403: # unauthorized access
                 self.authenticated = False
-            return None
+            return ""
 
         data = r.json()
-        return data
+        return data.get("results")
 
-    # TODO
+    # /account/positions -> return json if successful else ""
+    def get_positions(self):
+        url = "{}/account/positions".format(self.base_url)
+        headers = {'Authorization': self.access_token}
+        r = requests.get(url, headers = headers)
+        code = r.status_code
+
+        if code != 200:
+            if code == 401 or code == 403: # unauthorized access
+                self.authenticated = False
+            return ""
+
+        data = r.json()
+        return data.get("results")
