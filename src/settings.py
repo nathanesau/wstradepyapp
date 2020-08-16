@@ -1,8 +1,6 @@
 # part of wstradepyapp - backend
 
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtCore import QSettings
 
 ORGANIZATION_NAME = "Unofficial"
 APPLICATION_NAME = "WealthsimpleTradeDesktop"
@@ -46,4 +44,3 @@ class Settings:
         if "email" in credentials:
             settings.setValue("email", credentials.get("email"))
         settings.endGroup()
-        

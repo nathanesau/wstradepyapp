@@ -3,14 +3,16 @@
 from typing import List
 
 class Account:
+    # pylint: disable=too-few-public-methods
+    # pylint: disable=too-many-instance-attributes
     def __init__(self):
         self.object = None
-        self.id = None
+        self.account_id = None
         self.created_at = None
         self.updated_at = None
         self.opened_at = None
         self.deleted_at = None
-        self.buying_power = None
+        self.buyer_power = None
         self.current_balance = None
         self.withdrawn_earnings = None
         self.net_deposits = None
@@ -25,6 +27,9 @@ class Account:
         self.position_quantities = None
 
 class Position:
+    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-statements
+    # pylint: disable=too-few-public-methods
     def __init__(self):
         self.currency = None
         self.security_type = None
@@ -57,7 +62,7 @@ class Position:
         self.updated_by = None
         self.updated_reason = None
         self.ws_tradibility_overwrite = None
-        self.id = None
+        self.position_id = None
         self.user_id = None
         self.account_id = None
         self.start_of_day_quantity = None
@@ -83,7 +88,7 @@ def get_account_list(json_list) -> List[Account]:
     for json in json_list:
         account = Account()
         account.object = json.get("object", None)
-        account.id = json.get("id", None)
+        account.account_id = json.get("id", None)
         account.created_at = json.get("created_at", None)
         account.opened_at = json.get("opened_at", None)
         account.deleted_at = json.get("deleted_at", None)
@@ -104,6 +109,7 @@ def get_account_list(json_list) -> List[Account]:
     return account_list
 
 def get_positions_list(json_list) -> List[Position]:
+    # pylint: disable=too-many-statements
     positions_list = []
     for json in json_list:
         position = Position()
@@ -133,12 +139,13 @@ def get_positions_list(json_list) -> List[Position]:
         position.price_interface_symbol = json.get("price_interface_symbol", None)
         position.quote_expiry_minutes = json.get("quote_expiry_minutes", None)
         position.security_entity = json.get("security_entity", None)
-        position.settlement_period_business_days = json.get("settlement_period_business_days", None)
+        position.settlement_period_business_days = json.get(
+            "settlement_period_business_days", None)
         position.skip_sync = json.get("skip_sync", None)
         position.updated_by = json.get("updated_by", None)
-        position_updated_reason = json.get("updated_reason", None)
+        position.updated_reason = json.get("updated_reason", None)
         position.ws_tradibility_overwrite = json.get("ws_tradibility_overwrite", None)
-        position.id = json.get("id", None)
+        position.position_id = json.get("id", None)
         position.user_id = json.get("user_id", None)
         position.account_id = json.get("account_id", None)
         position.start_of_day_quantity = json.get("start_of_day_quantity", None)
@@ -152,8 +159,10 @@ def get_positions_list(json_list) -> List[Position]:
         position.created_at = json.get("created_at", None)
         position.updated_at = json.get("updated_at", None)
         position.book_value_currency = json.get("book_value_currency", None)
-        position.start_of_day_book_value_currency = json.get("start_of_day_book_value_currency", None)
-        position.start_of_day_market_book_value_currency = json.get("start_of_day_market_book_value_currency", None)
+        position.start_of_day_book_value_currency = json.get(
+            "start_of_day_book_value_currency", None)
+        position.start_of_day_market_book_value_currency = json.get(
+            "start_of_day_market_book_value_currency", None)
         position.market_book_value_currency = json.get("market_book_value_currency", None)
         position.sparkline = json.get("sparkline", None)
         position.quote = json.get("quote", None)
