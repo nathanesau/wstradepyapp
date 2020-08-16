@@ -46,7 +46,7 @@ class PositionsWidget(QWidget):
         self.group_box_layout.addWidget(self.currency_label, 5, 2)
         self.group_box_layout.addWidget(QLabel("Total Value: "), 6, 1)
         self.group_box_layout.addWidget(self.total_value_label, 6, 2)
-        self.group_box_layout.addWidget(self.infoButton, 7, 1, 1, 2)
+        self.group_box_layout.addWidget(self.info_button, 7, 1, 1, 2)
 
         self.group_box = QGroupBox()
         self.group_box.setTitle("Position {}".format(position_id))
