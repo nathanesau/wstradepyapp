@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QLabel
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel, QGroupBox
 
 from src.data import get_account_list
 from src.widget.account_widget import AccountWidget
@@ -19,14 +19,8 @@ def clear_layout(layout):
 
 # groupbox containing account widgets
 class AccountListWidget(QWidget):
-    def create_widgets(self):
-         # re-create the widgets/ layout
-        self.widgets = []
-        self.group_box = QGroupBox()
-        self.group_box.setTitle("Summary")
-        self.group_box_layout = QVBoxLayout()
-        self.group_box.setLayout(self.group_box_layout)
-        self.main_layout.addWidget(self.group_box)
+    def refresh_needed(self):
+        pass
 
     def __init__(self, api, parent=None):
         super().__init__(parent)
@@ -34,23 +28,35 @@ class AccountListWidget(QWidget):
         # references to backend
         self.api = api
 
+        # create list layout
+        self.list_layout = QVBoxLayout()
+        self.list_widget = QWidget()
+
         # create main layout
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
 
-        # will be done again in refresh
-        self.create_widgets()
+        # cache
+        self.last_refresh_email = None
+
+        # widgets (created in refresh)
+        self.widgets = []
 
     def refresh(self):
-        clear_layout(self.group_box_layout)
+        if self.last_refresh_email == self.api.email:
+            return
+
+        self.last_refresh_email = self.api.email
+        clear_layout(self.list_layout)
         clear_layout(self.main_layout)
 
-        # re-create the widgets/ layouts
-        self.create_widgets()
+        # re-create list layout
+        self.list_layout = QVBoxLayout()
+        self.list_widget = QWidget()
 
+        # create self.widgets
         accounts = self.api.get_accounts()
         account_list = get_account_list(accounts)
-
         if account_list: # create account widgets
             self.widgets = []
             for i, _ in enumerate(account_list):
@@ -59,9 +65,13 @@ class AccountListWidget(QWidget):
         else:
             self.widgets = [QLabel("No accounts available")]
 
-        # add account widgets to groupbox layout
+        # add self.widgets to layout
         for widget in self.widgets:
-            self.group_box_layout.addWidget(widget)
+            self.list_layout.addWidget(widget)
 
-        self.group_box_layout.addStretch()
+        # add new widgets to main layout
+        self.list_layout.addStretch()
+        self.list_layout.setContentsMargins(0, 0, 0, 0)
+        self.list_widget.setLayout(self.list_layout)
+        self.main_layout.addWidget(self.list_widget)
         self.repaint()

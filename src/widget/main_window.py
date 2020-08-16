@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.setWindowTitle(constants.APP_NAME)
         self.setWindowIcon(QIcon(":icon.svg"))
-        self.resize(600, 600)
+        self.resize(600, 750)
 
     # refreshes data for active widget
     def refresh_active_widget(self):
